@@ -46,6 +46,9 @@ class CalDavManager:
                 if calendar_parsed.hostname == url_caldav2.hostname and calendar_parsed.path == url_caldav2.path:
                         cal = calendar
         
+            if cal == None:
+                cal = calendars[0]
+        
         return cal
     
     def createLessonEvent(self, lesson: Lesson, title: str="", body: str=""):
