@@ -29,7 +29,7 @@ where:
 					file.write("webdav_login = " + "hackme\n")
 					file.write("webdav_password = " + "hackme\n")
 					file.write("webdav_calendar = " + "https://example.com/remote.php/dav/calendars/user/calendar/\n")
-					file.write("cert = " + "certyfikat.json")
+					file.write("cert = " + "certyfikat.json\n")
 					file.write("group = " + "2")
 					config['webdav_login'] = "hackme"
 					config['webdav_password'] = "hackme"
