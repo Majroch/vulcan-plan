@@ -3,6 +3,7 @@ import datetime
 from urllib.parse import urlparse
 import os
 from vulcan._lesson import Lesson
+from pytz import timezone
 
 try:
     import vobject #pylint: disable=import-error
@@ -79,8 +80,8 @@ class CalDavManager:
 
         calendar.vevent.add('description').value = "Teacher: " + lesson.teacher.name + "(" + lesson.teacher.short + ")"
 
-        calendar.vevent.add("dtstart").value = lesson.from_
-        calendar.vevent.add("dtend").value = lesson.to
+        calendar.vevent.add("dtstart").value = timezone("Europe/Warsaw").localize(datetime.datetime(lesson.from_.year, lesson.from_.month, lesson.from_.day, lesson.from_.hour, lesson.from_.minute, lesson.from_.second)).astimezone(timezone("UTC"))
+        calendar.vevent.add("dtend").value = timezone("Europe/Warsaw").localize(datetime.datetime(lesson.to.year, lesson.to.month, lesson.to.day, lesson.to.hour, lesson.to.minute, lesson.to.second)).astimezone(timezone("UTC"))
         
         valarm = calendar.vevent.add('valarm')
         valarm.add('action').value = "AUDIO"
@@ -93,8 +94,8 @@ class CalDavManager:
 
     def sendEvent(self, event: vobject.icalendar.VCalendar2_0):
         cal = self._prepare_cal()
-        start = event.getSortedChildren()[0].getChildValue("dtstart") + datetime.timedelta(hours=0)
-        end = event.getSortedChildren()[0].getChildValue("dtend") + datetime.timedelta(hours=0)
+        start = event.getSortedChildren()[0].getChildValue("dtstart")#.astimezone(timezone("UTC"))
+        end = event.getSortedChildren()[0].getChildValue("dtend")#.astimezone(timezone("UTC"))
         search = cal.date_search(start, end)
         print(start, end)
         print(search)
@@ -166,6 +167,7 @@ class CalDavManager:
                 continue
             for myEvent in events:
                 myEvent = myEvent.getSortedChildren()[0]
+                # print("\n", myEvent, "\n")
                 # print("\n", tmpEvent.getChildValue("description"), "\n")
                 # print("\n", myEvent.getChildValue("description"), "\n")
                 try:
@@ -176,4 +178,5 @@ class CalDavManager:
                 except:
                     continue
             if toDelete:
+                print("Removing:", calEvent)
                 calEvent.delete()
