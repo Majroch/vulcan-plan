@@ -29,7 +29,7 @@ vulcan = Vulcan(cert)
 
 while True:
     dates = []
-    for x in range(3):
+    for x in range(30):
         dates.append(datetime.date.today() + datetime.timedelta(days=x))
 
     lessons = []
