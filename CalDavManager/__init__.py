@@ -80,8 +80,8 @@ class CalDavManager:
 
         calendar.vevent.add('description').value = "Teacher: " + lesson.teacher.name + "(" + lesson.teacher.short + ")"
 
-        calendar.vevent.add("dtstart").value = timezone("Europe/Warsaw").localize(datetime.datetime(lesson.from_.year, lesson.from_.month, lesson.from_.day, lesson.from_.hour, lesson.from_.minute, lesson.from_.second)).astimezone(timezone("UTC"))
-        calendar.vevent.add("dtend").value = timezone("Europe/Warsaw").localize(datetime.datetime(lesson.to.year, lesson.to.month, lesson.to.day, lesson.to.hour, lesson.to.minute, lesson.to.second)).astimezone(timezone("UTC"))
+        calendar.vevent.add("dtstart").value = lesson.from_.astimezone(timezone("UTC"))
+        calendar.vevent.add("dtend").value = lesson.to.astimezone(timezone("UTC"))
         
         valarm = calendar.vevent.add('valarm')
         valarm.add('action').value = "AUDIO"
@@ -167,15 +167,13 @@ class CalDavManager:
                 continue
             for myEvent in events:
                 myEvent = myEvent.getSortedChildren()[0]
-                # print("\n", myEvent, "\n")
-                # print("\n", tmpEvent.getChildValue("description"), "\n")
-                # print("\n", myEvent.getChildValue("description"), "\n")
                 try:
-                    if tmpEvent.getChildValue("description") == myEvent.getChildValue("description") and tmpEvent.getChildValue("summary") == myEvent.getChildValue("summary"):
+                    if tmpEvent.getChildValue("description") == myEvent.getChildValue("description") and tmpEvent.getChildValue("summary") == myEvent.getChildValue("summary") and tmpEvent.getChildValue("dtstart") == myEvent.getChildValue("dtstart"):
                         toDelete = False
                     elif not "Teacher: " in tmpEvent.getChildValue("description"):
                         toDelete = False
                 except:
+                    toDelete = False
                     continue
             if toDelete:
                 print("Removing:", calEvent)
