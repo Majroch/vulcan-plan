@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+
+#####################################################################################
+# __  __        _                _                                                  #
+#|  \/  | __ _ (_)_ __ ___   ___| |__       Github: https://github.majroch.pl       #
+#| |\/| |/ _` || | '__/ _ \ / __| '_ \      Git Repo: https://git.majroch.pl        #
+#| |  | | (_| || | | | (_) | (__| | | |     Homepage: https://majroch.pl            #
+#|_|  |_|\__,_|/ |_|  \___/ \___|_| |_|                                             #
+#            |__/                                                                   #
+#####################################################################################
+
 from vulcan import Vulcan
 import json, datetime, time
 from CalDavManager import CalDavManager
