@@ -4,8 +4,13 @@
 #|  \/  | __ _ (_)_ __ ___   ___| |__       Github: https://github.majroch.pl       #
 #| |\/| |/ _` || | '__/ _ \ / __| '_ \      Git Repo: https://git.majroch.pl        #
 #| |  | | (_| || | | | (_) | (__| | | |     Homepage: https://majroch.pl            #
-#|_|  |_|\__,_|/ |_|  \___/ \___|_| |_|                                             #
+#|_|  |_|\__,_|/ |_|  \___/ \___|_| |_|     E-mail: jakuboch4@gmail.com             #
 #            |__/                                                                   #
+#####################################################################################
+#                                                                                   #
+#                       Sometimes this code below is mine, but...                   #
+#                      other times it's just from StackOverflow :)                  #
+#                                                                                   #
 #####################################################################################
 
 from Config import Config
@@ -82,23 +87,33 @@ class CalDavManager:
     
     def createLessonEvent(self, lesson: Lesson, title: str="", body: str=""):
         calendar = vobject.iCalendar()
-        _title = lesson.subject.name + " (" + lesson.room + ") "
+        _title = ""
+        if not lesson.changes == '':
+            _title += lesson.changes + " "
+        _title += lesson.subject.name + " (" + lesson.room + ") "
         if title != "":
             _title += " " + title
         
         calendar.add('vevent').add('summary').value = _title
-
-        calendar.vevent.add('description').value = "Teacher: " + lesson.teacher.name + "(" + lesson.teacher.short + ")"
+        description = "Teacher: " + lesson.teacher.name + "(" + lesson.teacher.short + ")"
+        if not lesson.changes == '':
+            description += "\nChanges: " + lesson.changes
+        calendar.vevent.add('description').value = description
 
         calendar.vevent.add("dtstart").value = lesson.from_.astimezone(timezone("UTC"))
         calendar.vevent.add("dtend").value = lesson.to.astimezone(timezone("UTC"))
         
-        valarm = calendar.vevent.add('valarm')
-        valarm.add('action').value = "AUDIO"
-        valarm.add("trigger").value = lesson.from_ - datetime.timedelta(minutes=5)
-        valarm = calendar.vevent.add('valarm')
-        valarm.add('action').value = "AUDIO"
-        valarm.add("trigger").value = lesson.from_ - datetime.timedelta(minutes=0)
+        if lesson.changes == '':
+            valarm = calendar.vevent.add('valarm')
+            valarm.add('action').value = "AUDIO"
+            valarm.add("trigger").value = lesson.from_ - datetime.timedelta(minutes=5)
+            valarm = calendar.vevent.add('valarm')
+            valarm.add('action').value = "AUDIO"
+            valarm.add("trigger").value = lesson.from_ - datetime.timedelta(minutes=0)
+        else:
+            valarm = calendar.vevent.add('valarm')
+            valarm.add('action').value = "AUDIO"
+            valarm.add("trigger").value = lesson.from_ - datetime.timedelta(minutes=0)
         
         return calendar
 
